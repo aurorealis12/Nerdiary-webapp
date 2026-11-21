@@ -73,10 +73,13 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'myprojectdb',
+        'USER': 'user1',
+        'PASSWORD': 'user1',
+        'HOST': 'localhost',
+        'PORT': '',
+    }}
 
 
 # Password validation
