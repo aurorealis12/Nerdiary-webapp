@@ -12,38 +12,30 @@
    ```
    CREATE USER user1;
    \password user1
-   CREATE DATABASE myprojectdb OWNER user1;
+   CREATE DATABASE nerdiary_dev OWNER user1;
    ALTER ROLE user1 SET client_encoding TO 'utf8';
    ALTER ROLE user1 SET default_transaction_isolation TO 'read committed';
    ALTER ROLE user1 SET timezone TO 'UTC';
    \q
    ```
 
-   If you already have the user and database, skip this step and step 5.
-4. Copy the `DB_*` variables from `.env.example` to `backend/.env` and set your own values.
-5. From `backend/`, import the data into the **empty** database:
-
-   ```powershell
-   & $psql -U postgres -d myprojectdb -v ON_ERROR_STOP=1 --single-transaction -f backup.sql
-   ```
-
-6. From `backend/`, with the virtual environment activated:
+   If you already have `user1`, only create the database. Do not reuse a database
+   created from `backup.sql`: the custom user model needs a new, empty one.
+4. Copy the `DB_*` variables from `.env.example` to `backend/.env` and set your own values
+   (`DB_NAME=nerdiary_dev`).
+5. From `backend/`, with the virtual environment activated:
 
    ```powershell
    uv pip install -r requirements.txt
    python manage.py migrate
+   python manage.py createsuperuser
    python manage.py runserver
    ```
 
-The backup contains no admin account. Create one with `python manage.py createsuperuser`.
+Django migrations create the tables. Do not import `backup.sql`; it is kept only as a
+reference for the old schema and its test data.
 
-## Updating the backup
+## Changing models
 
-Use `-f` instead of `>`, so PowerShell does not change the file encoding:
-
-```powershell
-$pgDump = "C:\Program Files\PostgreSQL\VERSION\bin\pg_dump.exe"
-& $pgDump -U user1 -h localhost -p 5432 --exclude-table-data=public.auth_user --exclude-table-data=public.auth_user_groups --exclude-table-data=public.auth_user_user_permissions --exclude-table-data=public.django_session --exclude-table-data=public.django_admin_log -f backup.sql myprojectdb
-```
-
-Before committing, check that the file has no real passwords or personal data (see the `uzytkownik` table).
+After editing a model, run `python manage.py makemigrations` and commit the new migration
+files together with the model change.

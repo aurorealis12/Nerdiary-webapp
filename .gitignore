@@ -221,3 +221,6 @@ __marimo__/
 
 .idea/
 .venv/
+
+# User uploads
+backend/media/
