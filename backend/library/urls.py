@@ -6,6 +6,8 @@ from . import views
 router = SimpleRouter()
 router.register("works", views.WorkViewSet, basename="work")
 router.register("library", views.LibraryEntryViewSet, basename="library-entry")
+router.register("tags", views.TagViewSet, basename="tag")
+router.register("recommendations", views.RecommendationViewSet, basename="recommendation")
 
 urlpatterns = [
     path("genres/", views.GenreListView.as_view(), name="genre-list"),
